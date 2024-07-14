@@ -7,14 +7,15 @@
 
 import Foundation
 
-struct Family: Decodable {
-    let id: Int
-    let name: String
+struct Family: Decodable, Identifiable, Encodable {
+    let id: Int?
+    let created_at: Date
+    let family_name: String
     let user_id: UUID
 }
 
-struct Member: Decodable {
-    let id: Int
+struct Member: Decodable, Identifiable {
+    let id: Int?
     let first_name: String
     let last_name: String
     let date_of_birth: Date
@@ -22,9 +23,14 @@ struct Member: Decodable {
     let family_id: Int
 }
 
-struct Document: Decodable {
-    let id: Int
+struct Document: Decodable, Identifiable {
+    let id: Int?
     let date: Date
     let description: String
     let member_id: Int
+}
+
+struct Todo: Identifiable, Decodable {
+  var id: Int
+  var title: String
 }

@@ -8,17 +8,20 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+    @StateObject var vm: FamilyViewModel = FamilyViewModel()
+    
+  var body: some View {
+      if vm.state == .authenticated {
+          FamilyView(vm: vm)
+      }
+      else {
+          AuthView(vm: vm)
+      }
+  }
 }
 
 #Preview {
-    ContentView()
+  ContentView()
 }
+
+

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F875582C2C432702005AE2E4 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F875582B2C432702005AE2E4 /* AuthView.swift */; };
+		F875582E2C434A24005AE2E4 /* MembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F875582D2C434A24005AE2E4 /* MembersView.swift */; };
 		F87C3EE02C20478C00196CAA /* memory_laneApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87C3EDF2C20478C00196CAA /* memory_laneApp.swift */; };
 		F87C3EE22C20478C00196CAA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87C3EE12C20478C00196CAA /* ContentView.swift */; };
 		F87C3EE42C20478D00196CAA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F87C3EE32C20478D00196CAA /* Assets.xcassets */; };
@@ -20,9 +22,13 @@
 		F87C3F052C20483B00196CAA /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87C3F022C20483B00196CAA /* Connection.swift */; };
 		F87C3F062C20483B00196CAA /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87C3F032C20483B00196CAA /* Models.swift */; };
 		F87C3F072C20483B00196CAA /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87C3F042C20483B00196CAA /* Secrets.swift */; };
+		F89ACCC32C430CFD00B7CA95 /* FamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89ACCC22C430CFD00B7CA95 /* FamilyView.swift */; };
+		F89ACCC72C430DBE00B7CA95 /* FamilyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89ACCC62C430DBE00B7CA95 /* FamilyViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F875582B2C432702005AE2E4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		F875582D2C434A24005AE2E4 /* MembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersView.swift; sourceTree = "<group>"; };
 		F87C3EDC2C20478C00196CAA /* memory-lane.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "memory-lane.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F87C3EDF2C20478C00196CAA /* memory_laneApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = memory_laneApp.swift; sourceTree = "<group>"; };
 		F87C3EE12C20478C00196CAA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -31,6 +37,8 @@
 		F87C3F022C20483B00196CAA /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		F87C3F032C20483B00196CAA /* Models.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		F87C3F042C20483B00196CAA /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		F89ACCC22C430CFD00B7CA95 /* FamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyView.swift; sourceTree = "<group>"; };
+		F89ACCC62C430DBE00B7CA95 /* FamilyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +77,8 @@
 		F87C3EDE2C20478C00196CAA /* memory-lane */ = {
 			isa = PBXGroup;
 			children = (
+				F89ACCC52C430DAE00B7CA95 /* ViewModels */,
+				F89ACCC42C430D0200B7CA95 /* Views */,
 				F87C3F012C20480100196CAA /* Services */,
 				F87C3EED2C20479800196CAA /* DB */,
 				F87C3EDF2C20478C00196CAA /* memory_laneApp.swift */,
@@ -102,6 +112,24 @@
 			children = (
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		F89ACCC42C430D0200B7CA95 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F89ACCC22C430CFD00B7CA95 /* FamilyView.swift */,
+				F875582B2C432702005AE2E4 /* AuthView.swift */,
+				F875582D2C434A24005AE2E4 /* MembersView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		F89ACCC52C430DAE00B7CA95 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F89ACCC62C430DBE00B7CA95 /* FamilyViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -185,10 +213,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F89ACCC32C430CFD00B7CA95 /* FamilyView.swift in Sources */,
 				F87C3F072C20483B00196CAA /* Secrets.swift in Sources */,
 				F87C3F052C20483B00196CAA /* Connection.swift in Sources */,
 				F87C3EE22C20478C00196CAA /* ContentView.swift in Sources */,
 				F87C3EE02C20478C00196CAA /* memory_laneApp.swift in Sources */,
+				F875582E2C434A24005AE2E4 /* MembersView.swift in Sources */,
+				F89ACCC72C430DBE00B7CA95 /* FamilyViewModel.swift in Sources */,
+				F875582C2C432702005AE2E4 /* AuthView.swift in Sources */,
 				F87C3F062C20483B00196CAA /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -323,8 +355,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"memory-lane/Preview Content\"";
+				DEVELOPMENT_TEAM = F96K8QGHZR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "memory-lane/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -351,8 +385,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"memory-lane/Preview Content\"";
+				DEVELOPMENT_TEAM = F96K8QGHZR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "memory-lane/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
