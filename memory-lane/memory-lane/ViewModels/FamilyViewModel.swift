@@ -37,6 +37,8 @@ class FamilyViewModel: ObservableObject {
             .from("Family")
             .insert(family)
             .execute()
+        
+        await fetchFamily()
     }
     
     func fetchFamily() async {

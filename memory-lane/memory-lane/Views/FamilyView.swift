@@ -16,7 +16,7 @@ struct FamilyView: View {
             List {
                 ForEach(vm.families) { family in
                     NavigationLink {
-                        MembersView()
+                        MembersView(vm: MemberViewModel(family_id: family.id ?? 0))
                     } label : {
                         Text(family.family_name)
                     }
