@@ -16,7 +16,7 @@ struct DocumentView: View {
         VStack {
             List {
                 ForEach(vm.documents) { document in
-                    DocumentRowView(vm: vm, document: document)
+                    DocumentRowView(document: document)
                         .swipeActions {
                             Button(role: .destructive) {
                                 Task {

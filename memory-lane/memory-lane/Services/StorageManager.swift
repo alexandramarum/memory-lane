@@ -49,6 +49,7 @@ class StorageManager {
 
     
     func deletePhotos(documentId: UUID) async throws {
+        
         do {
             let folderPath = "document\(documentId)"
             
@@ -68,6 +69,44 @@ class StorageManager {
             }
         } catch {
             print("Error deleting photos: \(error)")
+        }
+    }
+    
+    func deleteMemberPhotos(memberId: Int) async throws {
+        do {
+            let docs: [Document] = try await client
+                .from("Document")
+                .select()
+                .eq("member_id", value: memberId)
+                .execute()
+                .value
+            
+            for doc in docs {
+                try await StorageManager.shared.deletePhotos(documentId: doc.id)
+            }
+            
+        } catch {
+            print("Error deleting member documents: \(error)")
+        }
+    }
+    
+    func deleteFamilyPhotos(familyId: Int) async throws {
+        do {
+            let members: [Member] = try await client
+                .from("Member")
+                .select()
+                .eq("family_id", value: familyId)
+                .execute()
+                .value
+            
+            for member in members {
+                if let memberId = member.id {
+                    try await StorageManager.shared.deleteMemberPhotos(memberId: memberId)
+                }
+            }
+
+        } catch {
+            print("Error deleting family documents: \(error)")
         }
     }
 }

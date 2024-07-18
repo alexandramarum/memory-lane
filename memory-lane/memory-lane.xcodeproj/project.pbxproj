@@ -11,6 +11,8 @@
 		F86911752C4569AF00C6BBCB /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86911742C4569AF00C6BBCB /* TimelineView.swift */; };
 		F86911792C47874D00C6BBCB /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86911782C47874D00C6BBCB /* StorageManager.swift */; };
 		F869117C2C48333C00C6BBCB /* DocumentRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F869117B2C48333C00C6BBCB /* DocumentRowView.swift */; };
+		F869117E2C496DD200C6BBCB /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F869117D2C496DD200C6BBCB /* AuthManager.swift */; };
+		F86911802C49C17400C6BBCB /* DocumentRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F869117F2C49C17400C6BBCB /* DocumentRowViewModel.swift */; };
 		F875582C2C432702005AE2E4 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F875582B2C432702005AE2E4 /* AuthView.swift */; };
 		F875582E2C434A24005AE2E4 /* HomeNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F875582D2C434A24005AE2E4 /* HomeNavigationView.swift */; };
 		F87C3EE02C20478C00196CAA /* memory_laneApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87C3EDF2C20478C00196CAA /* memory_laneApp.swift */; };
@@ -38,6 +40,8 @@
 		F86911742C4569AF00C6BBCB /* TimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
 		F86911782C47874D00C6BBCB /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		F869117B2C48333C00C6BBCB /* DocumentRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentRowView.swift; sourceTree = "<group>"; };
+		F869117D2C496DD200C6BBCB /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		F869117F2C49C17400C6BBCB /* DocumentRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentRowViewModel.swift; sourceTree = "<group>"; };
 		F875582B2C432702005AE2E4 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		F875582D2C434A24005AE2E4 /* HomeNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNavigationView.swift; sourceTree = "<group>"; };
 		F87C3EDC2C20478C00196CAA /* memory-lane.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "memory-lane.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				F86911782C47874D00C6BBCB /* StorageManager.swift */,
+				F869117D2C496DD200C6BBCB /* AuthManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -157,6 +162,7 @@
 				F89ACCC62C430DBE00B7CA95 /* FamilyViewModel.swift */,
 				F8AC08832C447B4B00BE411E /* MemberViewModel.swift */,
 				F8AC088B2C44AD3C00BE411E /* DocumentViewModel.swift */,
+				F869117F2C49C17400C6BBCB /* DocumentRowViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -242,6 +248,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F86911802C49C17400C6BBCB /* DocumentRowViewModel.swift in Sources */,
 				F8AC088C2C44AD3C00BE411E /* DocumentViewModel.swift in Sources */,
 				F86911752C4569AF00C6BBCB /* TimelineView.swift in Sources */,
 				F869117C2C48333C00C6BBCB /* DocumentRowView.swift in Sources */,
@@ -249,6 +256,7 @@
 				F87C3F072C20483B00196CAA /* Secrets.swift in Sources */,
 				F87C3F052C20483B00196CAA /* Connection.swift in Sources */,
 				F87C3EE22C20478C00196CAA /* ContentView.swift in Sources */,
+				F869117E2C496DD200C6BBCB /* AuthManager.swift in Sources */,
 				F87C3EE02C20478C00196CAA /* memory_laneApp.swift in Sources */,
 				F875582E2C434A24005AE2E4 /* HomeNavigationView.swift in Sources */,
 				F8AC088E2C44AD4800BE411E /* DocumentView.swift in Sources */,

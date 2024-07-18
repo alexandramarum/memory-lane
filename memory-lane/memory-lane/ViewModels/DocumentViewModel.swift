@@ -13,7 +13,7 @@ class DocumentViewModel: ObservableObject {
     
     private var member_id: Int
     private var family_id: Int
-    private var storageManager = StorageManager()
+    private var storageManager = StorageManager.shared
     
     init(member_id: Int, family_id: Int) {
         self.member_id = member_id
@@ -66,28 +66,6 @@ class DocumentViewModel: ObservableObject {
         try await storageManager.deletePhotos(documentId: at)
         await fetchDocuments()
         
-    }
-    
-    func fetchPhoto(documentId: UUID) async throws {
-        let folderPath = "document\(documentId)"
-        
-        // List all files in the specified folder
-        let files = try await client.storage
-            .from("Documents")
-            .list(path: folderPath)
-
-        // Load each image asynchronously
-        var images: [UIImage] = []
-        for file in files {
-            if let image = try await storageManager
-                .fetchImage(path: "\(folderPath)/\(file.name)") {
-                images.append(image)
-            }
-        }
-
-        DispatchQueue.main.async {
-            self.images = images
-        }
     }
 
 }

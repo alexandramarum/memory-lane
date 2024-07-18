@@ -8,20 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var vm: FamilyViewModel = FamilyViewModel()
+    @EnvironmentObject var authManager: AuthManager
     
   var body: some View {
-      if vm.state == .authenticated {
-          FamilyView(vm: vm)
+      if authManager.isAuthenticated {
+          FamilyView(vm: FamilyViewModel())
       }
       else {
-          AuthView(vm: vm)
+          AuthView()
       }
   }
 }
 
 #Preview {
   ContentView()
+        .environmentObject(AuthManager.shared)
 }
 
 

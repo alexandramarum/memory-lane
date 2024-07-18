@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct AuthView: View {
-    @ObservedObject var vm: FamilyViewModel
+    @EnvironmentObject var authManager: AuthManager
+    @State var email: String = ""
+    @State var password: String = ""
 
   var body: some View {
       VStack {
@@ -25,10 +27,10 @@ struct AuthView: View {
                   .bold()
           }
           VStack {
-              TextField("Email", text: $vm.email)
+              TextField("Email", text: $email)
                   .textFieldStyle(.roundedBorder)
                   .autocapitalization(.none)
-              TextField("Password", text: $vm.password)
+              TextField("Password", text: $password)
                   .textFieldStyle(.roundedBorder)
                   .autocapitalization(.none)
           }
@@ -39,7 +41,7 @@ struct AuthView: View {
               Button {
                   Task {
                       do {
-                          try await vm.signUp()
+                          try await authManager.signUp(email: email, password: password)
                       } catch {
                           print("Error signing up: \(error.localizedDescription)")
                       }
@@ -55,7 +57,7 @@ struct AuthView: View {
               Button {
                   Task{
                       do {
-                          try await vm.signIn()
+                          try await authManager.signIn(email: email, password: password)
                       } catch {
                           print("Error signing in: \(error.localizedDescription)")
                       }
@@ -75,6 +77,7 @@ struct AuthView: View {
 
 #Preview {
   ContentView()
+        .environmentObject(AuthManager.shared)
 }
 
 

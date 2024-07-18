@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FamilyView: View {
+    @EnvironmentObject var authManager: AuthManager
     @ObservedObject var vm: FamilyViewModel
     @State var isShowingSheet: Bool = false
     
@@ -36,7 +37,7 @@ struct FamilyView: View {
                     Button {
                         Task {
                             do {
-                                try await vm.signOut()
+                                try await authManager.signOut()
                             } catch {
                                 print("Error signing out: \(error)")
                             }

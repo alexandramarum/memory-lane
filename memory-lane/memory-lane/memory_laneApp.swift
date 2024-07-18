@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct memory_laneApp: App {
+    @StateObject var authManager = AuthManager.shared
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(authManager)
         }
     }
 }

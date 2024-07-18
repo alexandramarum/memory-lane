@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DocumentRowView: View {
-    @ObservedObject var vm: DocumentViewModel
+    @StateObject var vm: DocumentRowViewModel = DocumentRowViewModel()
     var document: Document
 
     var body: some View {
@@ -29,7 +29,6 @@ struct DocumentRowView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100)
-                                .border(.green)
                         }
                     }
                 }
@@ -37,7 +36,7 @@ struct DocumentRowView: View {
         }
         .task {
             do {
-                try await vm.fetchPhoto(documentId: document.id)
+                try await vm.fetchPhotos(documentId: document.id)
             } catch { print("Error fetching photos: \(error)")
             }
         }
@@ -45,5 +44,5 @@ struct DocumentRowView: View {
 }
 
 #Preview {
-    DocumentRowView(vm: DocumentViewModel(member_id: 1, family_id: 1), document: Document(id: UUID(), date: Date(), title: "Doc.ex", description: "example", member_id: 1, family_id: 1, user_id: UUID()))
+    DocumentRowView(vm: DocumentRowViewModel(), document: Document(id: UUID(), date: Date(), title: "Doc.ex", description: "example", member_id: 1, family_id: 1, user_id: UUID()))
 }

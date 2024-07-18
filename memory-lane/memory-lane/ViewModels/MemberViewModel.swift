@@ -48,6 +48,8 @@ class MemberViewModel: ObservableObject {
     }
     
     func deleteMember(at: Int) async throws {
+        try await StorageManager.shared.deleteMemberPhotos(memberId: at)
+        
         try await client
             .from("Member")
             .delete()
