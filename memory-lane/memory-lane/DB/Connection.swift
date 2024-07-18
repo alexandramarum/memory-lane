@@ -10,3 +10,4 @@ import Supabase
 
 let client = SupabaseClient(supabaseURL: Secrets.url!, supabaseKey: Secrets.key)
 
+

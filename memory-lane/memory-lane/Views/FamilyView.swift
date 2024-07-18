@@ -16,9 +16,18 @@ struct FamilyView: View {
             List {
                 ForEach(vm.families) { family in
                     NavigationLink {
-                        MembersView(vm: MemberViewModel(family_id: family.id ?? 0))
+                        HomeNavigationView(vm: MemberViewModel(family_id: family.id ?? 0))
                     } label : {
                         Text(family.family_name)
+                    }
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            Task {
+                                try await vm.deleteFamily(at: family.id ?? 0)
+                            }
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
                     }
                 }
             }
@@ -29,7 +38,7 @@ struct FamilyView: View {
                             do {
                                 try await vm.signOut()
                             } catch {
-                                print("Error signing out: \(error.localizedDescription)")
+                                print("Error signing out: \(error)")
                             }
                         }
                     } label: {
@@ -46,20 +55,16 @@ struct FamilyView: View {
             }
             .navigationTitle("Family")
             .task {
-                do {
-                    try await vm.fetchFamily()
-                } catch {
-                    print("Error fetching families: \(error.localizedDescription)")
-                }
+                await vm.fetchFamily()
             }
         }
         .sheet(isPresented: $isShowingSheet) {
-            SheetView(vm: vm, isShowingSheet: $isShowingSheet)
+            FamilySheetView(vm: vm, isShowingSheet: $isShowingSheet)
         }
     }
 }
 
-struct SheetView: View {
+struct FamilySheetView: View {
     @ObservedObject var vm: FamilyViewModel
     @Binding var isShowingSheet: Bool
     @State var name: String = ""
@@ -79,7 +84,7 @@ struct SheetView: View {
                         do {
                             try await vm.createFamily(text: name)
                         } catch {
-                            print("Error creating family: \(error.localizedDescription)")
+                            print("Error creating family: \(error)")
                         }
                         isShowingSheet.toggle()
                     }

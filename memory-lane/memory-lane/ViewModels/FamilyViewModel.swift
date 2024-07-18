@@ -58,6 +58,19 @@ class FamilyViewModel: ObservableObject {
             }
         }
     
+    func deleteFamily(at: Int) async throws {
+        let user = try await client.auth.session.user
+        
+        try await client
+            .from("Family")
+            .delete()
+            .eq("id", value: at)
+            .eq("user_id", value: user.id) // you can only delete a family if you created that family
+            .execute()
+        
+        await fetchFamily()
+    }
+    
     // Auth
     
     func signUp() async throws {
