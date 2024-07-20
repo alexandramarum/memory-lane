@@ -9,7 +9,12 @@ import SwiftUI
 
 class DocumentRowViewModel: ObservableObject {
     @Published var images: [UIImage] = []
+    @Published var owner: String
     private var storageManager = StorageManager.shared
+    
+    init(owner: String) {
+        self.owner = owner
+    }
     
     func fetchPhotos(documentId: UUID) async throws {
         let folderPath = "document\(documentId)"

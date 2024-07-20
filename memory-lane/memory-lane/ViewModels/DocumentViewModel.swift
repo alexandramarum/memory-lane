@@ -8,16 +8,29 @@
 import SwiftUI
 
 class DocumentViewModel: ObservableObject {
-    @Published var documents: [Document] = []
+    @Published var documents: [Document]
     @Published var images: [UIImage] = []
+    @Published var name: String
     
     private var member_id: Int
     private var family_id: Int
     private var storageManager = StorageManager.shared
     
-    init(member_id: Int, family_id: Int) {
+    init(member_id: Int, family_id: Int, documents: [Document], name: String) {
         self.member_id = member_id
         self.family_id = family_id
+        self.documents = documents
+        self.name = name
+    }
+    
+    var filteredDocuments: [Document] {
+          documents.filter { $0.member_id == member_id }
+      }
+    
+    var groupedByYear: [Int:[Document]] {
+        Dictionary(grouping: filteredDocuments) { document in
+                   Calendar.current.component(.year, from: document.date)
+               }
     }
     
     func createDocument(title: String, date: Date, description: String?, photos: [UIImage]) async throws {

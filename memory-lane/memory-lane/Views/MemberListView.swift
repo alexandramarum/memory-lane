@@ -8,28 +8,43 @@
 import SwiftUI
 
 struct MemberListView: View {
+    @Environment(\.colorScheme) var colorScheme
     @ObservedObject var vm: MemberViewModel
     @State var isShowingSheet: Bool = false
-    
+
     var body: some View {
         VStack {
-            List {
-                ForEach(vm.members) { member in
-                    NavigationLink {
-                        if let memberID = member.id {
-                            DocumentView(vm: DocumentViewModel(member_id: memberID, family_id: member.family_id))
+            Text("Family Members")
+                .font(.largeTitle)
+                .bold()
+                .padding(-50)
+            List(vm.members) { member in
+                NavigationLink {
+                    if let memberID = member.id {
+                        DocumentView(vm: DocumentViewModel(member_id: memberID, family_id: member.family_id, documents: vm.documents, name: member.first_name))
+                    }
+                } label: {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text(member.first_name + " " + member.last_name)
+                                .font(.title3)
+                            if member.date_of_death != nil {
+                                Text("Deceased")
+                                    .foregroundStyle(.secondary)
+                                    .italic()
+                        }
+                        }
+                        Text("Age \(vm.getAge(member: member))")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .swipeActions {
+                    Button(role: .destructive) {
+                        Task {
+                            try await vm.deleteMember(at: member.id ?? 0)
                         }
                     } label: {
-                        Text(member.first_name + " " + member.last_name)
-                    }
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            Task {
-                                try await vm.deleteMember(at: member.id ?? 0)
-                            }
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
+                        Label("Delete", systemImage: "trash")
                     }
                 }
             }
@@ -40,10 +55,9 @@ struct MemberListView: View {
                     .bold()
                     .foregroundColor(.green)
                     .padding()
+                    .background(colorScheme == .dark ? Color.white : Color.black)
+                    .clipShape(.capsule)
             }
-        }
-        .task {
-           await vm.fetchMembers()
         }
         .sheet(isPresented: $isShowingSheet) {
             MemberSheetView(vm: vm, isShowingSheet: $isShowingSheet)
@@ -56,10 +70,10 @@ struct MemberSheetView: View {
     @Binding var isShowingSheet: Bool
     @State var first_name: String = ""
     @State var last_name: String = ""
-    @State var date_of_birth: Date = Date()
-    @State var date_of_death: Date = Date()
+    @State var date_of_birth: Date = .init()
+    @State var date_of_death: Date = .init()
     @State var isDeceased: Bool = false
-    
+
     var body: some View {
         NavigationStack {
             Text("Required Information")
@@ -122,5 +136,5 @@ struct MemberSheetView: View {
 }
 
 #Preview {
-    MemberListView(vm: MemberViewModel(family_id: 1))
+    MemberListView(vm: MemberViewModel(family_id: 1, members: [Member.example], documents: [Document.example], familyName: "Skywalker"))
 }

@@ -11,6 +11,9 @@ struct AuthView: View {
     @EnvironmentObject var authManager: AuthManager
     @State var email: String = ""
     @State var password: String = ""
+    @State var showAlert = false
+    @State var alertTitle = Text("")
+    @State var alertMessage = Text("")
 
   var body: some View {
       VStack {
@@ -30,9 +33,10 @@ struct AuthView: View {
               TextField("Email", text: $email)
                   .textFieldStyle(.roundedBorder)
                   .autocapitalization(.none)
-              TextField("Password", text: $password)
+              SecureField("Password", text: $password)
                   .textFieldStyle(.roundedBorder)
                   .autocapitalization(.none)
+                  
           }
           .padding(.leading)
           .padding(.trailing)
@@ -42,7 +46,13 @@ struct AuthView: View {
                   Task {
                       do {
                           try await authManager.signUp(email: email, password: password)
+                          alertTitle = Text("Success!")
+                          alertMessage = Text("You have successfully created an account. Sign in to get started.")
+                          showAlert.toggle()
                       } catch {
+                          alertTitle = Text("Error signing up")
+                          alertMessage = Text("\(error.localizedDescription)")
+                          showAlert.toggle()
                           print("Error signing up: \(error.localizedDescription)")
                       }
                   }
@@ -54,11 +64,17 @@ struct AuthView: View {
                       .background(.black)
                       .clipShape(.capsule)
               }
+              .alert(isPresented: $showAlert) {
+                  Alert(title: alertTitle, message: alertMessage, dismissButton: .default(Text("Ok")))
+              }
               Button {
                   Task{
                       do {
                           try await authManager.signIn(email: email, password: password)
                       } catch {
+                          alertTitle = Text("Error signing in")
+                          alertMessage = Text("\(error.localizedDescription)")
+                          showAlert.toggle()
                           print("Error signing in: \(error.localizedDescription)")
                       }
                   }
@@ -70,6 +86,9 @@ struct AuthView: View {
                       .background(.black)
                       .clipShape(.capsule)
                       }
+              .alert(isPresented: $showAlert) {
+                  Alert(title: alertTitle, message: alertMessage, dismissButton: .default(Text("Ok")))
+              }
               }
           }
       }

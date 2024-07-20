@@ -10,6 +10,8 @@ import Foundation
 @MainActor
 class FamilyViewModel: ObservableObject {
     @Published var families: [Family] = []
+    @Published var familyMembers: [String: [Member]] = [:]
+    @Published var familyDocuments: [String: [Document]] = [:]
     @Published var email = ""
     @Published var password = ""
     
@@ -35,8 +37,37 @@ class FamilyViewModel: ObservableObject {
                 .execute()
                 .value
             
-            DispatchQueue.main.async {
-                self.families = response
+            var tempFamilyMembers: [String:[Member]] = [:]
+            var tempFamilyDocuments: [String:[Document]] = [:]
+            
+            for family in response {
+                let members: [Member] = try await client
+                    .from("Member")
+                    .select()
+                    .eq("family_id", value: family.id)
+                    .execute()
+                    .value
+                
+                tempFamilyMembers[family.family_name] = members
+                
+                for member in members {
+                    let documents: [Document] = try await client
+                        .from("Document")
+                        .select()
+                        .eq("family_id", value: family.id)
+                        .execute()
+                        .value
+                    
+                    tempFamilyDocuments[family.family_name] = documents
+                    
+                    DispatchQueue.main.async {
+                        self.families = response
+                        self.familyDocuments = tempFamilyDocuments
+                        self.familyMembers = tempFamilyMembers
+                        
+                    }
+
+                }
             }
         } catch {
             print("Error fetching families: \(error.localizedDescription)")

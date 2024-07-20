@@ -12,6 +12,12 @@ struct Family: Decodable, Identifiable, Encodable {
     let created_at: Date
     let family_name: String
     let user_id: UUID
+    
+    static var example: Family = Family(
+        id: 1,
+        created_at: Date(),
+        family_name: "Skywalker",
+        user_id: UUID())
 }
 
 struct Member: Decodable, Identifiable, Encodable, Hashable {
@@ -23,6 +29,16 @@ struct Member: Decodable, Identifiable, Encodable, Hashable {
     let date_of_death: Date?
     let family_id: Int
     let user_id: UUID
+    
+    static var example: Member = Member(
+        id: 1,
+        created_at: Date(),
+        first_name: "Luke",
+        last_name: "Skywalker",
+        date_of_birth: Date(),
+        date_of_death: Date(),
+        family_id: 1,
+        user_id: UUID())
 }
 
 struct Document: Decodable, Identifiable, Encodable {
@@ -33,4 +49,13 @@ struct Document: Decodable, Identifiable, Encodable {
     let member_id: Int
     let family_id: Int
     let user_id: UUID
+    
+    static var example: Document = Document(
+        id: UUID(),
+        date: Date(),
+        title: "Luke's Lightsaber",
+        description: "Green kyber crystal",
+        member_id: 1,
+        family_id: 1,
+        user_id: UUID())
 }

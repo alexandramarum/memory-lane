@@ -28,5 +28,5 @@ struct HomeNavigationView: View {
 
 
 #Preview {
-    HomeNavigationView(vm: MemberViewModel(family_id: 1))
+    HomeNavigationView(vm: MemberViewModel(family_id: 1, members: [Member.example], documents: [Document.example], familyName: "Skywalker"))
 }

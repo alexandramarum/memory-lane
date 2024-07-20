@@ -9,23 +9,32 @@ import PhotosUI
 import SwiftUI
 
 struct DocumentView: View {
+    @Environment(\.colorScheme) var colorScheme
     @ObservedObject var vm: DocumentViewModel
     @State var isShowingSheet: Bool = false
 
     var body: some View {
         VStack {
+            Text("\(vm.name)'s Documents")
+                .font(.largeTitle)
+                .bold()
+                .padding(-50)
             List {
-                ForEach(vm.documents) { document in
-                    DocumentRowView(document: document)
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                Task {
-                                    try await vm.deleteDocument(at: document.id)
+                ForEach(vm.groupedByYear.keys.sorted(), id: \.self) { year in
+                    Section(header: Text("\(year.description)")) {
+                        ForEach(vm.groupedByYear[year] ?? []) { document in
+                            DocumentRowView(vm: DocumentRowViewModel(owner: vm.name), document: document)
+                                .swipeActions {
+                                    Button(role: .destructive) {
+                                        Task {
+                                            try await vm.deleteDocument(at: document.id)
+                                        }
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
                                 }
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
                         }
+                    }
                 }
             }
             Button {
@@ -35,12 +44,9 @@ struct DocumentView: View {
                     .bold()
                     .foregroundColor(.green)
                     .padding()
-                    .background(.black)
+                    .background(colorScheme == .dark ? Color.white : Color.black)
                     .clipShape(.capsule)
             }
-        }
-        .task {
-            await vm.fetchDocuments()
         }
         .sheet(isPresented: $isShowingSheet) {
             DocumentSheetView(vm: vm, isShowingSheet: $isShowingSheet)
@@ -149,5 +155,5 @@ struct DocumentSheetView: View {
 }
 
 #Preview {
-    DocumentView(vm: DocumentViewModel(member_id: 1, family_id: 1))
+    DocumentView(vm: DocumentViewModel(member_id: 1, family_id: 1, documents: [Document.example], name: "Luke"))
 }

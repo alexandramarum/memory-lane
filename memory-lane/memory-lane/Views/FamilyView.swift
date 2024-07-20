@@ -8,28 +8,61 @@
 import SwiftUI
 
 struct FamilyView: View {
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authManager: AuthManager
     @ObservedObject var vm: FamilyViewModel
     @State var isShowingSheet: Bool = false
-    
+
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(vm.families) { family in
-                    NavigationLink {
-                        HomeNavigationView(vm: MemberViewModel(family_id: family.id ?? 0))
-                    } label : {
-                        Text(family.family_name)
-                    }
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            Task {
-                                try await vm.deleteFamily(at: family.id ?? 0)
+            VStack {
+                List {
+                    ForEach(vm.families) { family in
+                        NavigationLink {
+                            if let members = vm.familyMembers[family.family_name], let documents = vm.familyDocuments[family.family_name] {
+                                HomeNavigationView(vm: MemberViewModel(family_id: family.id ?? 0, members: members, documents: documents, familyName: family.family_name))
                             }
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            VStack(alignment: .leading){
+                                Text(family.family_name)
+                                    .bold()
+                                    .font(.title3)
+                                if vm.familyMembers[family.family_name]?.count == 1 {
+                                    Text("\(vm.familyMembers[family.family_name]?.count ?? 0) Member")
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    Text("\(vm.familyMembers[family.family_name]?.count ?? 0) Members")
+                                        .foregroundStyle(.secondary)
+                                }
+                                if vm.familyDocuments[family.family_name]?.count == 1 {
+                                    Text("\(vm.familyDocuments[family.family_name]?.count ?? 0) Document")
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    Text("\(vm.familyDocuments[family.family_name]?.count ?? 0) Documents")
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                Task {
+                                    try await vm.deleteFamily(at: family.id ?? 0)
+                                }
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
                         }
                     }
+                }
+                Button {
+                    isShowingSheet.toggle()
+                } label: {
+                    Text("Add Family")
+                        .bold()
+                        .foregroundColor(.green)
+                        .padding()
+                        .background(colorScheme == .dark ? Color.white : Color.black)
+                        .clipShape(.capsule)
                 }
             }
             .toolbar {
@@ -45,13 +78,6 @@ struct FamilyView: View {
                     } label: {
                         Text("Sign Out")
                     }
-                }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            isShowingSheet.toggle()
-                        } label: {
-                            Image(systemName: "plus")
-                        }
                 }
             }
             .navigationTitle("Family")
@@ -69,7 +95,7 @@ struct FamilySheetView: View {
     @ObservedObject var vm: FamilyViewModel
     @Binding var isShowingSheet: Bool
     @State var name: String = ""
-    
+
     var body: some View {
         NavigationStack {
             Text("Family Name")
