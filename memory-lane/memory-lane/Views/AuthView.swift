@@ -21,10 +21,11 @@ struct AuthView: View {
               Text("Memory")
                   .font(.largeTitle)
                   .bold()
-              Image(systemName: "road.lanes.curved.left")
+              Image(systemName: "tree")
                   .foregroundColor(.green)
                   .font(.largeTitle)
                   .bold()
+                  .padding(-10)
               Text("Lane")
                   .font(.largeTitle)
                   .bold()
@@ -38,6 +39,7 @@ struct AuthView: View {
                   .autocapitalization(.none)
                   
           }
+          .ignoresSafeArea(.keyboard)
           .padding(.leading)
           .padding(.trailing)
           .padding(.bottom)

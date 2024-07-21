@@ -1,92 +1,99 @@
-//
-//  TestView.swift
-//  memory-lane
-//
-//  Created by Alexandra Marum on 7/13/24.
-//
-
 import SwiftUI
 
 struct FamilyView: View {
-    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authManager: AuthManager
     @ObservedObject var vm: FamilyViewModel
     @State var isShowingSheet: Bool = false
+    @State var familyToDelete: Family?
 
     var body: some View {
         NavigationStack {
-            VStack {
-                List {
-                    ForEach(vm.families) { family in
-                        NavigationLink {
-                            if let members = vm.familyMembers[family.family_name], let documents = vm.familyDocuments[family.family_name] {
-                                HomeNavigationView(vm: MemberViewModel(family_id: family.id ?? 0, members: members, documents: documents, familyName: family.family_name))
+            if vm.state == .working {
+                VStack {
+                    List {
+                        ForEach(vm.families) { family in
+                            NavigationLink {
+                                HomeNavigationView(vm: MemberViewModel(family_id: family.id ?? 0, members: vm.familyMembers[family.family_name] ?? [], documents: vm.familyDocuments[family.family_name] ?? [], familyName: family.family_name))
+                            } label: {
+                                VStack(alignment: .leading) {
+                                    Text(family.family_name)
+                                        .bold()
+                                        .font(.title3)
+                                    if let members = vm.familyMembers[family.family_name] {
+                                        Text("\(members.count) Member\(members.count > 1 ? "s" : "")")
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    if let documents = vm.familyDocuments[family.family_name] {
+                                        Text("\(documents.count) Document\(documents.count > 1 ? "s" : "")")
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            }
+                            .swipeActions {
+                                Button(role: .destructive) {
+                                    familyToDelete = family
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
+                    }
+                    Button {
+                        isShowingSheet.toggle()
+                    } label: {
+                        Text("Add Family")
+                            .bold()
+                            .foregroundColor(.green)
+                            .padding()
+                            .background(Color.black)
+                            .clipShape(.capsule)
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            Task {
+                                do {
+                                    try await authManager.signOut()
+                                } catch {
+                                    print("Error signing out: \(error)")
+                                }
                             }
                         } label: {
-                            VStack(alignment: .leading){
-                                Text(family.family_name)
-                                    .bold()
-                                    .font(.title3)
-                                if vm.familyMembers[family.family_name]?.count == 1 {
-                                    Text("\(vm.familyMembers[family.family_name]?.count ?? 0) Member")
-                                        .foregroundStyle(.secondary)
-                                } else {
-                                    Text("\(vm.familyMembers[family.family_name]?.count ?? 0) Members")
-                                        .foregroundStyle(.secondary)
-                                }
-                                if vm.familyDocuments[family.family_name]?.count == 1 {
-                                    Text("\(vm.familyDocuments[family.family_name]?.count ?? 0) Document")
-                                        .foregroundStyle(.secondary)
-                                } else {
-                                    Text("\(vm.familyDocuments[family.family_name]?.count ?? 0) Documents")
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                Task {
-                                    try await vm.deleteFamily(at: family.id ?? 0)
-                                }
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
+                            Text("Sign Out")
                         }
                     }
                 }
-                Button {
-                    isShowingSheet.toggle()
-                } label: {
-                    Text("Add Family")
-                        .bold()
-                        .foregroundColor(.green)
-                        .padding()
-                        .background(colorScheme == .dark ? Color.white : Color.black)
-                        .clipShape(.capsule)
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        Task {
-                            do {
-                                try await authManager.signOut()
-                            } catch {
-                                print("Error signing out: \(error)")
+                .navigationTitle("Family")
+                .alert(item: $familyToDelete) { family in
+                    Alert(
+                        title: Text("Are you sure you want to delete this?"),
+                        message: Text("Action cannot be undone"),
+                        primaryButton: .destructive(Text("Delete")) {
+                            Task {
+                                try await vm.deleteFamily(at: family.id ?? 0)
                             }
-                        }
-                    } label: {
-                        Text("Sign Out")
-                    }
+                        },
+                        secondaryButton: .cancel()
+                    )
                 }
-            }
-            .navigationTitle("Family")
-            .task {
-                await vm.fetchFamily()
+                .sheet(isPresented: $isShowingSheet) {
+                    FamilySheetView(vm: vm, isShowingSheet: $isShowingSheet)
+                }
+            } else {
+                Image(systemName: "tree")
+                    .foregroundColor(.green)
+                    .font(.largeTitle)
+                    .bold()
+                    .padding(-10)
+                Text("Loading...")
+                    .bold()
+                    .italic()
             }
         }
-        .sheet(isPresented: $isShowingSheet) {
-            FamilySheetView(vm: vm, isShowingSheet: $isShowingSheet)
+        .task {
+            await vm.fetchFamily()
+            vm.state = .working
         }
     }
 }
@@ -102,7 +109,6 @@ struct FamilySheetView: View {
                 .bold()
             TextField("", text: $name)
                 .textFieldStyle(.roundedBorder)
-                .autocapitalization(.none)
                 .padding()
                 .navigationTitle("Create a Family")
             HStack {

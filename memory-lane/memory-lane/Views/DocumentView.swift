@@ -9,15 +9,17 @@ import PhotosUI
 import SwiftUI
 
 struct DocumentView: View {
-    @Environment(\.colorScheme) var colorScheme
     @ObservedObject var vm: DocumentViewModel
     @State var isShowingSheet: Bool = false
+    @State var documentToDelete: Document?
 
     var body: some View {
         VStack {
             Text("\(vm.name)'s Documents")
-                .font(.largeTitle)
+                .font(.title)
                 .bold()
+                .lineLimit(1)
+                .truncationMode(.head)
                 .padding(-50)
             List {
                 ForEach(vm.groupedByYear.keys.sorted(), id: \.self) { year in
@@ -26,12 +28,13 @@ struct DocumentView: View {
                             DocumentRowView(vm: DocumentRowViewModel(owner: vm.name), document: document)
                                 .swipeActions {
                                     Button(role: .destructive) {
-                                        Task {
-                                            try await vm.deleteDocument(at: document.id)
-                                        }
+                                        documentToDelete = document
                                     } label: {
                                         Label("Delete", systemImage: "trash")
                                     }
+                                }
+                                .alert(item: $documentToDelete) { document in
+                                    deleteAlert(for: document)
                                 }
                         }
                     }
@@ -44,7 +47,7 @@ struct DocumentView: View {
                     .bold()
                     .foregroundColor(.green)
                     .padding()
-                    .background(colorScheme == .dark ? Color.white : Color.black)
+                    .background(Color.black)
                     .clipShape(.capsule)
             }
         }
@@ -52,6 +55,18 @@ struct DocumentView: View {
             DocumentSheetView(vm: vm, isShowingSheet: $isShowingSheet)
         }
     }
+    private func deleteAlert(for document: Document) -> Alert {
+         Alert(
+             title: Text("Are you sure you want to delete this?"),
+             message: Text("Action cannot be undone"),
+             primaryButton: .destructive(Text("Delete")) {
+                 Task {
+                     try await vm.deleteDocument(at: document.id)
+                 }
+             },
+             secondaryButton: .cancel()
+         )
+     }
 }
 
 struct DocumentSheetView: View {
@@ -93,7 +108,6 @@ struct DocumentSheetView: View {
                 .padding()
             TextField("Title", text: $title)
                 .textFieldStyle(.roundedBorder)
-                .autocapitalization(.none)
             DatePicker("Date", selection: $date)
                 .padding()
             Text("Optional")
@@ -105,7 +119,6 @@ struct DocumentSheetView: View {
             if giveDescription {
                 TextField("Description", text: $description)
                     .textFieldStyle(.roundedBorder)
-                    .autocapitalization(.none)
             }
             Spacer()
             HStack {
@@ -155,5 +168,5 @@ struct DocumentSheetView: View {
 }
 
 #Preview {
-    DocumentView(vm: DocumentViewModel(member_id: 1, family_id: 1, documents: [Document.example], name: "Luke"))
+    DocumentView(vm: DocumentViewModel(memberVm: MemberViewModel(family_id: 1, members: [Member.example], documents: [Document.example], familyName: "Skywalker"), member_id: 1, family_id: 1, documents: [Document.example], name: "Luke"))
 }

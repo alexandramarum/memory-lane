@@ -13,20 +13,28 @@ struct TimelineView: View {
     var body: some View {
         VStack {
             Text("\(vm.familyName) Timeline")
-                .font(.largeTitle)
+                .font(.title)
                 .bold()
+                .lineLimit(1)
+                .truncationMode(.head)
                 .padding(-50)
             List {
                 ForEach(vm.groupedByYear.keys.sorted(), id: \.self) { year in
                     Section(header: Text("\(year.description)")) {
                         ForEach(vm.groupedByYear[year] ?? []) { document in
-                            NavigationLink(destination: DocumentRowView(vm: DocumentRowViewModel(owner: vm.getNameByDocumentId(id: document.id)),document: document)) {
-                                HStack {
-                                    Text(document.title)
-                                        .bold()
-                                    Spacer()
-                                    Text(document.date, format: .dateTime.year().month().day())
-                                        .foregroundStyle(.secondary)
+                            let name = vm.getNameByDocumentId(id: document.id)
+                            NavigationLink(destination: DocumentRowView(vm: DocumentRowViewModel(owner: name),document: document)) {
+                                VStack(alignment: .leading) {
+                                    HStack {
+                                        Text(document.title)
+                                            .bold()
+                                        Spacer()
+                                        Text(document.date, format: .dateTime.year().month().day())
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Text("Published by \(name)")
+                                        .italic()
+                                        .font(.subheadline)
                                 }
                             }
                         }

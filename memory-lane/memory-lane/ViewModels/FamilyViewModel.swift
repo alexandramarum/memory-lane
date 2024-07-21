@@ -9,11 +9,18 @@ import Foundation
 
 @MainActor
 class FamilyViewModel: ObservableObject {
+    
+    enum loadingState {
+        case loading
+        case working
+    }
+    
     @Published var families: [Family] = []
     @Published var familyMembers: [String: [Member]] = [:]
     @Published var familyDocuments: [String: [Document]] = [:]
     @Published var email = ""
     @Published var password = ""
+    @Published var state: loadingState = .loading
     
     func createFamily(text: String) async throws {
         let user = try await client.auth.session.user
@@ -60,15 +67,19 @@ class FamilyViewModel: ObservableObject {
                     
                     tempFamilyDocuments[family.family_name] = documents
                     
-                    DispatchQueue.main.async {
-                        self.families = response
-                        self.familyDocuments = tempFamilyDocuments
-                        self.familyMembers = tempFamilyMembers
-                        
-                    }
 
                 }
             }
+            
+            try await StorageManager.shared.fetchAllImages()
+            
+            DispatchQueue.main.async {
+                self.families = response
+                self.familyDocuments = tempFamilyDocuments
+                self.familyMembers = tempFamilyMembers
+                
+            }
+            
         } catch {
             print("Error fetching families: \(error.localizedDescription)")
         }

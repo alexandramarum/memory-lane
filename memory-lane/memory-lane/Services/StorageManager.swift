@@ -11,6 +11,8 @@ import SwiftUI
 class StorageManager {
     static let shared = StorageManager()
     
+    @Published var photos: [String:UIImage] = [:]
+    
     func uploadPhoto(documentId: UUID, file: File) async throws {
         do {
             let folderPath = "document\(documentId)"
@@ -30,6 +32,7 @@ class StorageManager {
             
             let file = File(name: "photo\(i + 1).jpg", data: imageData, fileName: "photo\(i + 1).jpg", contentType: "jpg")
         
+            self.photos["document\(documentId)/\(file.name)"] = photo
             try await uploadPhoto(documentId: documentId, file: file)
         }
     }
@@ -45,6 +48,41 @@ class StorageManager {
         }
         
         return image
+    }
+    
+    func fetchAllImages() async throws {
+        do {
+            let documents: [Document] = try await client
+                .from("Document")
+                .select()
+                .execute()
+                .value
+            
+            var photos: [String:UIImage] = [:]
+            
+            for document in documents {
+                let folderPath = "document\(document.id)"
+                
+                let files = try await client.storage
+                    .from("Documents")
+                    .list(path: folderPath)
+                
+                let filePaths = files.map { "\(folderPath)/\($0.name)" }
+                
+                for filePath in filePaths {
+                    if let image = try await fetchImage(path: filePath) {
+                        photos[filePath] = image
+                    }
+                }
+            }
+            
+            DispatchQueue.main.sync {
+                self.photos = photos
+            }
+            
+        } catch {
+            print("Error fetching all images: \(error)")
+        }
     }
 
     
@@ -105,6 +143,8 @@ class StorageManager {
                 }
             }
 
+            try await StorageManager.shared.fetchAllImages()
+            
         } catch {
             print("Error deleting family documents: \(error)")
         }

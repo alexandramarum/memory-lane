@@ -36,25 +36,7 @@ class MemberViewModel: ObservableObject {
             .insert(member)
             .execute()
         
-        await fetchMembers()
-    }
-    
-    func fetchMembers() async {
-        do {
-            let members: [Member] = try await client
-                .from("Member")
-                .select()
-                .eq("family_id", value: family_id)
-                .order("date_of_birth", ascending: true)
-                .execute()
-                .value
-            
-            DispatchQueue.main.sync {
-                self.members = members
-            }
-        } catch {
-            print("Error fetching members: \(error.localizedDescription)")
-        }
+        await fetchFamily()
     }
     
     func deleteMember(at: Int) async throws {
@@ -66,11 +48,19 @@ class MemberViewModel: ObservableObject {
             .eq("id", value: at)
             .execute()
         
-        await fetchMembers()
+        await fetchFamily()
     }
     
-    func fetchFamilyDocuments() async {
+    func fetchFamily() async {
         do {
+            let members: [Member] = try await client
+                .from("Member")
+                .select()
+                .eq("family_id", value: family_id)
+                .order("date_of_birth", ascending: true)
+                .execute()
+                .value
+            
             let documents: [Document] = try await client
                 .from("Document")
                 .select()
@@ -81,9 +71,10 @@ class MemberViewModel: ObservableObject {
             
             DispatchQueue.main.sync {
                 self.documents = documents
+                self.members = members
             }
         } catch {
-            print("Error fetching family documents: \(error)")
+            print("Error fetching family: \(error)")
         }
     }
     
@@ -92,25 +83,20 @@ class MemberViewModel: ObservableObject {
     }
     
     func getNameByDocumentId(id: UUID) -> String {
-        // Create a dictionary mapping document IDs to documents
         let documentDictionary: [UUID: Document] = Dictionary(uniqueKeysWithValues: self.documents.map { ($0.id, $0) })
         
-        // Create a dictionary mapping member IDs to members
         let memberDictionary: [Int: Member] = Dictionary(uniqueKeysWithValues: self.members.compactMap { member in
             guard let id = member.id else { return nil }
             return (id, member)
         })
 
-        // Find the document by the given id
         if let document = documentDictionary[id]{
-            let memberId = document.member_id 
-            // Find the member by the member ID
+            let memberId = document.member_id
             if let member = memberDictionary[memberId] {
                 return member.first_name
             }
         }
 
-        // Return an empty string if the member or document is not found
         return ""
     }
 }

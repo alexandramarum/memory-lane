@@ -33,8 +33,8 @@ struct Member: Decodable, Identifiable, Encodable, Hashable {
     static var example: Member = Member(
         id: 1,
         created_at: Date(),
-        first_name: "Luke",
-        last_name: "Skywalker",
+        first_name: "LukeLONGNAMEYAYAYAYA",
+        last_name: "Skywalker Really Long Last Name",
         date_of_birth: Date(),
         date_of_death: Date(),
         family_id: 1,

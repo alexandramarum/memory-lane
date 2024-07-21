@@ -29,7 +29,7 @@ struct DocumentRowView: View {
                 .padding(.leading)
                 .padding(.bottom)
                 .italic()
-                .font(.title3)
+                .font(.headline)
                 .foregroundStyle(.secondary)
             if let description = document.description {
                 Text(description)
@@ -43,7 +43,7 @@ struct DocumentRowView: View {
                         Image(systemName: "photo")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 350)
+                            .frame(width: 300)
                     }
                     .border(.green, width: 5)
                 }
@@ -54,14 +54,13 @@ struct DocumentRowView: View {
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 350)
+                                .frame(width: 300)
                         }
                     }
                     .border(.green, width: 5)
                 }
             }
         }
-        .padding(.top)
         Spacer()
         .task {
             do {
@@ -73,5 +72,5 @@ struct DocumentRowView: View {
 }
 
 #Preview {
-    DocumentRowView(vm: DocumentRowViewModel(owner: "Luke"), document: Document(id: UUID(), date: Date(), title: "Image SF Symbol", description: "This is an example description. It can be as long as you'd like, really. In fact, it'd be beneficial to test the length of the description and see where changes can be made. Does it fill the space adequetely? I see one problem. It needs trailing padding. I really wish text justification existed, but alas.", member_id: 1, family_id: 1, user_id: UUID()))
+    DocumentRowView(vm: DocumentRowViewModel(owner: "Luke"), document: Document(id: UUID(), date: Date(), title: "Stupidly long title hehehehehhe", description: "This is an example description. It can be as long as you'd like, really. In fact, it'd be beneficial to test the length of the description and see where changes can be made. Does it fill the space adequetely? I see one problem. It needs trailing padding. I really wish text justification existed, but alas.", member_id: 1, family_id: 1, user_id: UUID()))
 }

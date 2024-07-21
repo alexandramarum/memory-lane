@@ -8,6 +8,7 @@
 import SwiftUI
 
 class DocumentViewModel: ObservableObject {
+    @Published var memberVm: MemberViewModel
     @Published var documents: [Document]
     @Published var images: [UIImage] = []
     @Published var name: String
@@ -16,7 +17,8 @@ class DocumentViewModel: ObservableObject {
     private var family_id: Int
     private var storageManager = StorageManager.shared
     
-    init(member_id: Int, family_id: Int, documents: [Document], name: String) {
+    init(memberVm: MemberViewModel, member_id: Int, family_id: Int, documents: [Document], name: String) {
+        self.memberVm = memberVm
         self.member_id = member_id
         self.family_id = family_id
         self.documents = documents
@@ -46,27 +48,7 @@ class DocumentViewModel: ObservableObject {
         
         try await storageManager.uploadPhotos(documentId: documentId, photos: photos)
         
-        await fetchDocuments()
-    }
-    
-    func fetchDocuments() async {
-        do {
-            let response: [Document] = try await client
-                .from("Document")
-                .select()
-                .eq("member_id", value: member_id)
-                .order("date", ascending: true)
-                .execute()
-                .value
-            
-            DispatchQueue.main.async {
-                self.documents = response
-            }
-            
-            
-        } catch {
-            print("Error fetching documents: \(error)")
-        }
+        await memberVm.fetchFamily()
     }
     
     func deleteDocument(at: UUID) async throws {
@@ -77,8 +59,8 @@ class DocumentViewModel: ObservableObject {
             .execute()
         
         try await storageManager.deletePhotos(documentId: at)
-        await fetchDocuments()
         
+        await memberVm.fetchFamily()
     }
 
 }

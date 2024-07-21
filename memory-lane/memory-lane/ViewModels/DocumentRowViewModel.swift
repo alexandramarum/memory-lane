@@ -10,7 +10,6 @@ import SwiftUI
 class DocumentRowViewModel: ObservableObject {
     @Published var images: [UIImage] = []
     @Published var owner: String
-    private var storageManager = StorageManager.shared
     
     init(owner: String) {
         self.owner = owner
@@ -19,20 +18,22 @@ class DocumentRowViewModel: ObservableObject {
     func fetchPhotos(documentId: UUID) async throws {
         let folderPath = "document\(documentId)"
         
-        // List all files in the specified folder
         let files = try await client.storage
             .from("Documents")
             .list(path: folderPath)
 
-        // Load each image asynchronously
         var images: [UIImage] = []
         for file in files {
-            if let image = try await storageManager
-                .fetchImage(path: "\(folderPath)/\(file.name)") {
+            let filePath = "\(folderPath)/\(file.name)"
+            if let image = StorageManager.shared.photos[filePath] {
                 images.append(image)
+            } else {
+                if let fetchedImage = try await StorageManager.shared.fetchImage(path: filePath) {
+                         images.append(fetchedImage)
+                         StorageManager.shared.photos[filePath] = fetchedImage
+                     }
+                 }
             }
-        }
-
         DispatchQueue.main.async {
             self.images = images
         }

@@ -8,20 +8,22 @@
 import SwiftUI
 
 struct MemberListView: View {
-    @Environment(\.colorScheme) var colorScheme
     @ObservedObject var vm: MemberViewModel
     @State var isShowingSheet: Bool = false
+    @State var memberToDelete: Member?
 
     var body: some View {
         VStack {
             Text("Family Members")
-                .font(.largeTitle)
+                .font(.title)
                 .bold()
+                .lineLimit(1)
+                .truncationMode(.head)
                 .padding(-50)
             List(vm.members) { member in
                 NavigationLink {
                     if let memberID = member.id {
-                        DocumentView(vm: DocumentViewModel(member_id: memberID, family_id: member.family_id, documents: vm.documents, name: member.first_name))
+                        DocumentView(vm: DocumentViewModel(memberVm: vm, member_id: memberID, family_id: member.family_id, documents: vm.documents, name: member.first_name))
                     }
                 } label: {
                     VStack(alignment: .leading) {
@@ -32,20 +34,34 @@ struct MemberListView: View {
                                 Text("Deceased")
                                     .foregroundStyle(.secondary)
                                     .italic()
+                            }
                         }
-                        }
+
+                        Text("Born \(member.date_of_birth.formatted().split(separator: ",")[0])")
+                            .font(.subheadline)
+                            .italic()
                         Text("Age \(vm.getAge(member: member))")
                             .foregroundStyle(.secondary)
                     }
                 }
                 .swipeActions {
                     Button(role: .destructive) {
-                        Task {
-                            try await vm.deleteMember(at: member.id ?? 0)
-                        }
+                        memberToDelete = member
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
+                }
+                .alert(item: $memberToDelete) { member in
+                    Alert(
+                        title: Text("Are you sure you want to delete this?"),
+                        message: Text("Action cannot be undone"),
+                        primaryButton: .destructive(Text("Delete")) {
+                            Task {
+                                try await vm.deleteMember(at: member.id ?? 0)
+                            }
+                        },
+                        secondaryButton: .cancel()
+                    )
                 }
             }
             Button {
@@ -55,7 +71,7 @@ struct MemberListView: View {
                     .bold()
                     .foregroundColor(.green)
                     .padding()
-                    .background(colorScheme == .dark ? Color.white : Color.black)
+                    .background(Color.black)
                     .clipShape(.capsule)
             }
         }
@@ -81,10 +97,8 @@ struct MemberSheetView: View {
                 .padding(.top)
             TextField("First Name", text: $first_name)
                 .textFieldStyle(.roundedBorder)
-                .autocapitalization(.none)
             TextField("Last Name", text: $last_name)
                 .textFieldStyle(.roundedBorder)
-                .autocapitalization(.none)
             DatePicker("Date of Birth", selection: $date_of_birth)
                 .padding()
             Text("Optional")
@@ -132,6 +146,7 @@ struct MemberSheetView: View {
             }
             .padding()
         }
+        .ignoresSafeArea(.keyboard)
     }
 }
 
