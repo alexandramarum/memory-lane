@@ -26,3 +26,9 @@ Additionally, my project makes use of the MVVM design pattern. Though I am famil
 <h2>Optimizations</h2>
 As I gained more experience with Supabase, I consolidated many of the database queries into a single or handful of instances and stored the data locally to view models--this greatly reduced the loading time between views and of the document files.
 <h2>Future Considerations</h2>
+In the future, I would like to add the following:
+
+- Updating operations
+- User profile pictures
+- Further data-handling optimizations
+- Security sufficient for potential sensitive information
