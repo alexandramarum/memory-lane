@@ -19,7 +19,7 @@ https://youtu.be/O1-0wdeZQpk <br><br>
 - Swift UI
 - Supabase + Supabase Storage
 
-<h2>Lesson's Learned</h2>
+<h2>Lessons Learned</h2>
 In creating this project I gained exposure to Supabase and broadly interacting with a database via Swift. I reaffirmed and built upon my previous experience with PostgreSQL by designing my desired tables and their relationships before beginning the project, and through the implementation of create, read, and delete operations. I realized early on that my tables needed to interact in more ways than I anticipated--that is an oversight that I will question in future projects that utilize PostgreSQL.<br><br>
 
 Additionally, my project makes use of the MVVM design pattern. Though I am familiar with this architecture, I benefited greatly from practicing it through MemoryLane. In the future, I want to be more conscious of when and how a view model should be utilized and identify when one might be superfluous. I also gained a new understanding of @EnvironmentObjects and Manager classes through applying them in this project. 
