@@ -24,7 +24,7 @@ In creating this project I gained exposure to Supabase and broadly interacting w
 
 Additionally, my project makes use of the MVVM design pattern. Though I am familiar with this architecture, I benefited greatly from practicing it through MemoryLane. In the future, I want to be more conscious of when and how a view model should be utilized and identify when one might be superfluous. I also gained a new understanding of @EnvironmentObjects and Manager classes through applying them in this project. 
 <h2>Optimizations</h2>
-As I gained more experience with Supabase, I consolidated many of the database queries into a single or handful of instances and stored the data locally to view models--this greatly reduced the loading time between views and of the document files.
+As I gained more experience with Supabase, I consolidated many of the database queries into a single or few instances and stored the data locally within view models--this greatly reduced the loading time between views and of the document files.
 <h2>Future Considerations</h2>
 In the future, I would like to add the following:
 
